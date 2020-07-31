@@ -1,10 +1,123 @@
+class Team extends React.Component {
+  constructor(props) {
+    super(props)
 
-// Deafault App component that all other compents are rendered through
-function App(props){
+    this.state = {
+      shots: 0,
+      score: 0
+    }
+    this.shotSound = new Audio('./Swish+2.mp3')
+    this.scoreSound = new Audio('./')
+  }
+
+  shotHandler = () => {
+    let score = this.state.score
+    this.shotSound.play()
+    if (Math.random() > 0.5) {
+      score += 1
+
+      setTimeout(() => {
+        this.scoreSound.play()
+      }, 100)
+    }
+    this.setState((state, props) => ({
+      shots: state.shots + 1,
+      score
+    }))
+  }
+  render() {
+    let shotPercentageDiv
+
+    if (this.state.shots) {
+      const shotPercentage = Math.round((this.state.score / this.state.shots) * 100)
+      shotPercentageDiv = (
+        <div>
+        <strong>Shooting %: {shotPercentage}</strong>
+      </div>
+      )
+    }
+
+   return (
+     <div className="Team">
+       <h2>{this.props.name}</h2>
+
+       <div className="identity">
+         <img src={this.props.logo} alt={this.props.name} />
+       </div>
+    
+       <div>
+          <strong>Shots:</strong> {this.state.shots}
+       </div>
+
+       <div>
+       <strong>Score:</strong> {this.state.score}
+      </div>
+      {shotPercentageDiv}
+
+      
+
+     <button onClick={this.shotHandler}>Shoot!</button>
+     </div>
+     
+   ) 
+  }
+}
+
+function Game(props) {
   return (
-    <div>
-      <h1>Welcome to the sports game starter</h1>
-      This file represents the code after completing the setup step in the lab instructions
+    <div className="Game">
+      <div className='stats'>
+        <h1>Welcome to {props.venue}</h1>
+        <Team 
+          name={props.visitingTeam.name} 
+          logo={props.visitingTeam.logoSrc} 
+        />
+
+        <div className="versus">
+          <h1>VS</h1>
+        </div>
+        <Team
+          name={props.homeTeam.name}
+          logo={props.homeTeam.logoSrc}
+        />
+      </div>
+    </div>
+  )
+}
+
+function App(props){
+  const raccoons = {
+    name: 'Russiaville Raccoons',
+    logoSrc: './raccoon.jpg'
+  }
+
+  const squirrels = {
+    name: 'Sheridan Squirrels',
+    logoSrc: "./squirrel.jpg"
+  }
+
+  const bunnies = {
+    name: 'Burlington Bunnies',
+    logoSrc: './bunnyLogo.png'
+  }
+
+  const hounds = {
+    name: 'Hammond Hounds',
+    logoSrc: './HoundLogo.jpg'
+  }
+  return (
+    <div className="App">
+      <Game 
+      venue="Union 525 Gem"
+      homeTeam={squirrels}
+      visitingTeam={raccoons}
+      />
+      <Game 
+      venue="Sheridan Arena"
+      homeTeam={bunnies}
+      visitingTeam={hounds}
+      />
+
     </div>
   )
 }
@@ -13,4 +126,4 @@ function App(props){
 ReactDOM.render(
   <App />,
   document.getElementById('root')
-);
+)
